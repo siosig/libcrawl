@@ -1,5 +1,4 @@
-#ifndef CRAWL_TABLE_H
-#define CRAWL_TABLE_H
+#pragma once
 
 namespace crawl {
   class Table {
@@ -8,5 +7,3 @@ namespace crawl {
     virtual ~Table() {}
   };
 }
-
-#endif //CRAWL_TABLE_H

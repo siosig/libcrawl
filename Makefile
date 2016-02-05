@@ -1,29 +1,49 @@
-#CPPFLAGS=-m64 -Ofast -march=native
-CXXFLAGS=-m64 -g3 -O0 -std=c++11 -fPIC -DPIC
-INCLUDE=-I/usr/local/mysql/include \
-	-I/usr/local/libxml2/include/libxml2 \
-	-I.
-CXXLIBFLAGS=-Wl,-rpath /usr/local/libxml2/lib \
-	-Wl,-rpath /usr/local/mysql/lib \
-	-lxml2 \
-	-lboost_filesystem \
-	-lboost_system \
-	-lmysqlclient \
-  -lstdc++ \
-  -fPIC \
-  -DPIC \
-  -shared
+export PKG_CONFIG_PATH := $(PKG_CONFIG_PATH):/usr/local/mysql/lib/pkgconfig
+export LD_LIBRARY_PATH := /usr/local/gcc49/lib:/usr/local/boost16/lib
+export PATH := $(PATH):/usr/local/gcc49/bin
+CXX=g++
+INCLUDE=-I./include -I/usr/local/include -I/usr/include/tidy \
+  `pkg-config --cflags log4cpp ` \
+  `pkg-config --cflags libxml++-2.6` \
+	`pkg-config --cflags libcurl` \
+  `pkg-config --cflags mysqlclient 2> /dev/null`
 
+INCLUDE := $(INCLUDE) -I/usr/local/boost16/include
 
-.SUFFIXES: .cpp .o
+#CXXFLAGS=-g3 -O0 -fPIC -std=c++0x $(INCLUDE)
+CXXFLAGS=-g3 -O0 -fPIC -std=c++11 $(INCLUDE)
 
-.cpp.o:
-	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $<
+SRCDIR=src
+OBJDIR=obj
+DISTDIR=dist
+VERSION=1.0.0
+PREFIX=/usr/local
+OBJS=$(OBJDIR)/importer.o $(OBJDIR)/tidy.o $(OBJDIR)/db.o $(OBJDIR)/updater.o $(OBJDIR)/http.o $(OBJDIR)/downloader.o $(OBJDIR)/executer.o $(OBJDIR)/downloader.o
 
-libcrawl.so: crawler.o importer.o
-	$(CXX) $(CXXLIBFLAGS) -shared -Wl,-soname -Wl,$@.0 -o $@.1.0.0 $<
-	ln -s $@.1.0.0 $@.0
-	ln -s $@.1.0.0 $@
+.SUFFIXES: $(SRCDIR)/.cpp $(OBJDIR)/.o
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+	$(CXX) $(CXXFLAGS) -c $<  -o $@
+
+$(DISTDIR)/libcrawl.so.$(VERSION): $(OBJS)
+	$(CXX) -shared -Wl,-soname -Wl,libcrawl.so.1 -o $@ $^
+
+$(DISTDIR)/libcrawl.a: $(OBJS)
+	ar r $@ $^
 
 clean:
-	rm -fv *.o *.so*
+	rm -fv $(DISTDIR)/*
+	rm -fv $(OBJDIR)/*
+
+all:
+	$(MAKE) $(DISTDIR)/libcrawl.a
+	$(MAKE) $(DISTDIR)/libcrawl.so.$(VERSION)
+
+install: $(DISTDIR)/libcrawl.so.$(VERSION)
+	install -v $(DISTDIR)/libcrawl.so.$(VERSION) $(PREFIX)/lib
+	(cd $(PREFIX)/lib; ln -sf libcrawl.so.$(VERSION) libcrawl.so.1)
+	(cd $(PREFIX)/lib; ln -sf libcrawl.so.1 libcrawl.so)
+	(mkdir -p $(PREFIX)/include/crawl)
+	(cp -fv include/crawl/*.hpp $(PREFIX)/include/crawl)
+	(mkdir -p $(PREFIX)/lib/pkgconfig)
+	(cp -fv pkgconfig $(PREFIX)/lib/pkgconfig/libcrawl.pc)

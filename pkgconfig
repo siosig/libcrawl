@@ -1,0 +1,23 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libcrawl
+Description: C++ library for crawler
+Version: 1.0
+Libs: -L${libdir} \
+  -lboost_filesystem \
+  -lboost_system \
+  -lboost_program_options \
+  -lboost_regex \
+  -lboost_date_time \
+  -lboost_thread \
+  -lmysqlcppconn \
+  -ltidy \
+  -llog4cpp \
+  -lnsl \
+  -lcurl \
+  -lcrawl
+
+Cflags: -I${includedir} 
