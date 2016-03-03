@@ -1,6 +1,7 @@
 #pragma once
-
+#include <stdio.h>
 #include <string>
+#include <sstream>
 #include <vector>
 #include <libxml++/libxml++.h>
 #include <libxml++/nodes/node.h>
@@ -39,20 +40,59 @@ inline static std::string get_content_value(const xmlpp::Node *node, const std::
 }
 
 
+inline static std::string current_datetime_str() {
+  boost::posix_time::ptime current_ptime = boost::posix_time::second_clock::local_time();
+  return boost::posix_time::to_iso_string(current_ptime);
+}
+
+inline static std::string current_date_str() {
+  boost::posix_time::ptime current_ptime = boost::posix_time::second_clock::local_time();
+  return boost::posix_time::to_iso_string(current_ptime).substr(0, 8);
+}
+
+inline static std::string current_time_str() {
+  boost::posix_time::ptime current_ptime = boost::posix_time::second_clock::local_time();
+  return boost::posix_time::to_iso_string(current_ptime).substr(9);
+}
+
 inline static std::string to_date_string (boost::posix_time::ptime t) {
   return boost::posix_time::to_iso_string(t).substr(0, 8);
 }
 
-inline static uint32_t stoui(const std::string &str) {
+inline static int32_t cstoi(const std::string &str) {
   uint32_t ret = 0;
-  BOOST_FOREACH(char c, str) {
-    if (c == ',')
-      continue;
-    if (c == '.')
+  std::stringstream tmp;
+  char c = 0;
+  for(std::string::const_iterator it = str.begin(); it != str.end(); it++){
+    c = *it;
+    if (c== '.')
       break;
-    ret = ret * 10 + atoi(&c);
+    if (c == '-' || (c >= '0' && c <= '9')) {
+      tmp << c;
+    }
   }
-  return ret;
+  c = tmp.str().at(tmp.str().length() - 1 );
+  if ('0' <= c && c <= '9') {
+    return std::stoi(tmp.str().c_str());
+  }
+  return 0;
+}
+
+inline static float cstof(const std::string &str) {
+  float ret = 0;
+  std::stringstream tmp;
+  char c = 0;
+  for(std::string::const_iterator it = str.begin(); it != str.end(); it++){
+    c = *it;
+    if (c == '-' || c == '.' || (c >= '0' && c <= '9')) {
+      tmp << c;
+    }
+  }
+  c = tmp.str().at(tmp.str().length() - 1 );
+  if ('0' <= c && c <= '9') {
+    return std::stof(tmp.str().c_str());
+  }
+  return 0;
 }
 
 inline std::string str_replace(const std::string &str, const std::string &key, const std::string &val) {

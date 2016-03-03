@@ -2,6 +2,7 @@
 #include "crawl/importer.hpp"
 #include <log4cpp/Category.hh>
 #include <log4cpp/PropertyConfigurator.hh>
+#include <boost/filesystem.hpp>
 
 namespace crawl {
   class Importer::ImporterPrivate {
@@ -34,10 +35,10 @@ namespace crawl {
       uint32_t cnt = 0;
       uint32_t exec_cnt = 0;
       for ( boost::filesystem::recursive_directory_iterator end, dir(t); dir != end; ++dir ) {
-        if (boost::filesystem::is_directory( dir->path())) {
+        if (boost::filesystem::is_directory(dir->path())) {
           continue;
         }
-        std::vector<std::vector<std::string>> tmp = parseHtml(dir->path());
+        std::vector<std::vector<std::string>> tmp = parseHtml(dir->path().string());
         rows.insert(rows.end(), tmp.begin(), tmp.end());
         if (!(++cnt % 100)) {
           exec_cnt += importData(rows);
@@ -47,7 +48,7 @@ namespace crawl {
       exec_cnt += importData(rows);
       return exec_cnt;
     } else {
-      std::vector<std::vector<std::string>> tmp = parseHtml(t);
+      std::vector<std::vector<std::string>> tmp = parseHtml(t.string());
       rows.insert(rows.end(), tmp.begin(), tmp.end());
       return importData(rows);
     }

@@ -12,15 +12,15 @@ public:
   }
   MultiHTTPClient(const std::string &_url, const std::string &_savepath)
     : url(_url)
-    , savepath(_savepath) {
-    callback_ref = boost::bind(&MultiHTTPClient::callback, this, _1, _2);
+    , callback_ref(std::bind(&MultiHTTPClient::callback, this, std::placeholders::_1, std::placeholders::_2))
+    , savepath(_savepath)
+  {
     setCallbackFunction(callback_ref);
+    http.setTimeout(120);
   }
   ~MultiHTTPClient(){}
 
   void callback(uint32_t id, const std::string &content) {
-    std::cout << savepath.c_str() << std::endl;
-    std::cout << content << std::endl;
     std::ofstream fp;
     fp.open(savepath, std::ios::out);
     fp << content;
@@ -30,13 +30,14 @@ public:
 
 protected:
   std::string run() {
-    return http.download(url);
+    std::string content = http.download(url);
+    return content;
   }
 
   std::string url;
   crawl::HTTP http;
 private:
-  boost::function<void (uint32_t, const std::string&)> callback_ref;
+  std::function<void (uint32_t, const std::string&)> callback_ref;
 };
 
 namespace crawl {

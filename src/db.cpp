@@ -119,7 +119,7 @@ namespace crawl {
     }
 
     if (outputlog) {
-      INFO(boost::format("query: %s") % query.substr(0, 200));
+      INFO((boost::format("query: %s") % query.substr(0, 200)).str());
     }
     return pstmt->executeUpdate();
 #else
@@ -144,7 +144,7 @@ namespace crawl {
       }
 
       if (outputlog) {
-        INFO(boost::format("query: %s") % query.substr(0, 200));
+        INFO(boost::format("query: %s") % query.substr(0, 200).str());
       }
       ret += pstmt->executeUpdate();
     }
@@ -155,7 +155,7 @@ namespace crawl {
   sql::PreparedStatement* DB::prepare(const std::string &query, bool outputlog) {
     d->setupConnection();
     if (outputlog) {
-      DEBUG(boost::format("query: %s") % query);
+      DEBUG((boost::format("query: %s") % query).str());
     }
     sql::PreparedStatement *prep_stmt = d->con->prepareStatement(query.c_str());
     d->stmt[prep_stmt] = query;
@@ -168,7 +168,7 @@ namespace crawl {
       stmt->setString(i + 1,  param.at(i));
     }
     if (outputlog) {
-      INFO(boost::format("query: %s") % d->stmt[stmt]);
+      INFO((boost::format("query: %s") % d->stmt[stmt]).str());
     }
     return stmt->executeQuery();
   }
@@ -176,7 +176,7 @@ namespace crawl {
   sql::ResultSet* DB::execute(sql::PreparedStatement* stmt, bool outputlog) {
     d->setupConnection();
     if (outputlog) {
-      INFO(boost::format("query: %s") % d->stmt[stmt]);
+      INFO((boost::format("query: %s") % d->stmt[stmt]).str());
     }
     return stmt->executeQuery();
   }
@@ -187,7 +187,7 @@ namespace crawl {
       stmt->setString(i + 1,  param.at(i));
     }
     if (outputlog) {
-      INFO(boost::format("query: %s") % d->stmt[stmt]);
+      INFO((boost::format("query: %s") % d->stmt[stmt]).str());
     }
     return stmt->execute();
   }
