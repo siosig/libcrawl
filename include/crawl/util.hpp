@@ -1,5 +1,5 @@
 #pragma once
-
+#include <stdio.h>
 #include <string>
 #include <vector>
 #include <libxml++/libxml++.h>
@@ -38,6 +38,21 @@ inline static std::string get_content_value(const xmlpp::Node *node, const std::
   return "";
 }
 
+
+inline static std::string current_datetime_str() {
+  boost::posix_time::ptime current_ptime = boost::posix_time::second_clock::local_time();
+  return boost::posix_time::to_iso_string(current_ptime);
+}
+
+inline static std::string current_date_str() {
+  boost::posix_time::ptime current_ptime = boost::posix_time::second_clock::local_time();
+  return boost::posix_time::to_iso_string(current_ptime).substr(0, 8);
+}
+
+inline static std::string current_time_str() {
+  boost::posix_time::ptime current_ptime = boost::posix_time::second_clock::local_time();
+  return boost::posix_time::to_iso_string(current_ptime).substr(9);
+}
 
 inline static std::string to_date_string (boost::posix_time::ptime t) {
   return boost::posix_time::to_iso_string(t).substr(0, 8);

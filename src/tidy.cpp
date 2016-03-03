@@ -4,7 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
-#include <boost/regex.hpp>
+#include <regex>
 #include <boost/format.hpp>
 
 #include <tidy.h>
@@ -108,11 +108,11 @@ namespace crawl {
     sin << reinterpret_cast<char*>(output.bp);
 
     bool is_replaced = false;
-    const static boost::regex re("^<html.*$");
+    const static std::regex re("^<html.*$");
     while (std::getline(sin, buf)) {
       if (!is_replaced) {
-        if (boost::regex_match(buf, re)) {
-          buf = boost::regex_replace(buf, re, "<html>", boost::format_all );
+        if (std::regex_match(buf, re)) {
+          buf = std::regex_replace(buf, re, "<html>");
           is_replaced = true;
         }
       }

@@ -1,24 +1,20 @@
 export PKG_CONFIG_PATH := $(PKG_CONFIG_PATH):/usr/local/mysql/lib/pkgconfig
-export LD_LIBRARY_PATH := /usr/local/gcc49/lib:/usr/local/boost16/lib
-export PATH := $(PATH):/usr/local/gcc49/bin
-CXX=g++
+
 INCLUDE=-I./include -I/usr/local/include -I/usr/include/tidy \
   `pkg-config --cflags log4cpp ` \
   `pkg-config --cflags libxml++-2.6` \
 	`pkg-config --cflags libcurl` \
   `pkg-config --cflags mysqlclient 2> /dev/null`
 
-INCLUDE := $(INCLUDE) -I/usr/local/boost16/include
-
-#CXXFLAGS=-g3 -O0 -fPIC -std=c++0x $(INCLUDE)
-CXXFLAGS=-g3 -O0 -fPIC -std=c++11 $(INCLUDE)
+#CXXFLAGS=-g3 -O0 -fPIC -std=c++11 $(INCLUDE)
+CXXFLAGS=-Ofast -march=native -fPIC -std=c++0x $(INCLUDE)
 
 SRCDIR=src
 OBJDIR=obj
 DISTDIR=dist
 VERSION=1.0.0
 PREFIX=/usr/local
-OBJS=$(OBJDIR)/importer.o $(OBJDIR)/tidy.o $(OBJDIR)/db.o $(OBJDIR)/updater.o $(OBJDIR)/http.o $(OBJDIR)/downloader.o $(OBJDIR)/executer.o $(OBJDIR)/downloader.o
+OBJS=$(OBJDIR)/importer.o $(OBJDIR)/tidy.o $(OBJDIR)/db.o $(OBJDIR)/updater.o $(OBJDIR)/http.o $(OBJDIR)/downloader.o $(OBJDIR)/executer.o
 
 .SUFFIXES: $(SRCDIR)/.cpp $(OBJDIR)/.o
 

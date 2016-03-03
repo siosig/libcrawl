@@ -11,7 +11,8 @@ namespace crawl {
 
   protected:
     uint32_t doExecute();
-    uint32_t enqueueRequest(const std::string &url, const std::string &savepath);
+    uint32_t enqueueRequest(const std::string &url, const std::string &fileName);
+
     void wait();
 
     virtual uint32_t downloadData() { return 0; }

@@ -6,7 +6,7 @@ $ make install
 
 # example: Makefile
 ```
-CXXFLAGS=-Ofast -march=native -std=c++0x `pkg-config --cflags libcrawl` \
+CXXFLAGS=-Ofast -march=native -std=c++11 `pkg-config --cflags libcrawl` \
         `pkg-config --cflags glibmm-2.4` \
         `pkg-config --cflags libxml++-2.6` \
         -I/usr/local/mysql/include

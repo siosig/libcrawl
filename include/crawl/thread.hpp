@@ -1,7 +1,8 @@
 #pragma once
-#include <boost/thread.hpp>
-#include <boost/foreach.hpp>
 #include <map>
+#include <thread>
+#include <functional>
+#include <future>
 
 /*
 class T1 : public crawl::thread<int> {
@@ -40,6 +41,7 @@ namespace crawl {
   public:
     thread()
       : t(NULL)
+      , callback(std::bind(&thread::noop, this, std::placeholders::_1, std::placeholders::_2))
       , id(0)
     {
     }
@@ -52,17 +54,17 @@ namespace crawl {
     }
 
     void start() {
-      t = new boost::thread(boost::bind(&thread::_run, this, boost::ref(p)));
+      t = new std::thread(std::bind(&thread::_run, this, std::ref(p)));
     }
 
-    void join() {
+    void join() const {
       if (t) {
         t->join();
       }
     }
 
     R get() {
-      boost::unique_future<R> f = p.get_future();
+      std::future<R> f = p.get_future();
       return f.get();
     }
 
@@ -70,26 +72,24 @@ namespace crawl {
       id = _id;
     }
 
-    void setCallbackFunction(boost::function<void (uint32_t, const R&)> &f) {
+    void setCallbackFunction(std::function<void (uint32_t, const R&)> &f) {
       callback = f;
     }
   protected:
     virtual R run(){}
 
   private:
-    void _run(boost::promise<R> &p) {
-      std::string ret = run();
+    void _run(std::promise<R> &p) {
+      R ret = run();
       p.set_value(ret);
-      if (!callback.empty()) {
-        callback(id, ret);
-      }
+      callback(id, ret);
     }
-    void noop(R) {
+    void noop(uint32_t id, const R&) {
     }
     uint32_t id;
-    boost::promise<R> p;
-    boost::thread *t;
-    boost::function<void (uint32_t, const R&)> callback;
+    std::promise<R> p;
+    std::thread *t;
+    std::function<void (uint32_t, const R&)> callback;
   };
 
   template <typename R>
@@ -112,7 +112,7 @@ namespace crawl {
       return cnt;
     }
 
-    void start() {
+    void start() const {
       for (typename std::map<uint32_t, thread<R>*>::iterator it = th_map.begin(); it != th_map.end(); it++) {
         it->second->start();
       }
@@ -139,9 +139,10 @@ namespace crawl {
       th_map.clear();
       cnt = 0;
     }
+
   private:
     std::map<uint32_t, thread<R>* > th_map;
-    boost::function<void (uint32_t, const R&)> callback;
+    std::function<void (uint32_t, const R&)> callback;
     uint32_t cnt;
   };
 }
