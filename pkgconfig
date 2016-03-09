@@ -16,7 +16,6 @@ Libs: -L${libdir} \
   -lnsl \
   -lcurl \
   -lcrawl \
-  -ltidy \
   -pthread
 
 Cflags: -I${includedir}
