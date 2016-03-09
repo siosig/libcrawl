@@ -6,7 +6,7 @@
 #include <fstream>
 #include <regex>
 #include <boost/format.hpp>
-
+#include <boost/filesystem.hpp>
 #include <tidy.h>
 #include <tidybuffio.h>
 #include <iconv.h>
@@ -75,7 +75,7 @@ namespace crawl {
     delete d;
   }
 
-  std::string Tidy::convert(const boost::filesystem::path &htmlFile, const std::string &encoding) const {
+  std::string Tidy::convert(const std::string &html_file_path, const std::string &encoding) const {
     bool ok = tidyOptSetBool( d->tdoc, TidyXmlOut, yes );
     ok &= tidyOptSetBool(d->tdoc, TidyQuiet, yes);
     ok &= tidyOptSetBool(d->tdoc, TidyQuoteNbsp, no);
@@ -98,7 +98,7 @@ namespace crawl {
 
 
     TidyBuffer output({0});
-    d->rc = tidyParseFile( d->tdoc, htmlFile.string().c_str() );           // Parse the input
+    d->rc = tidyParseFile( d->tdoc, html_file_path.c_str() );           // Parse the input
     d->rc = tidyCleanAndRepair(d->tdoc);               // Tidy it up!
     d->rc = tidySaveBuffer(d->tdoc, &output);          // Pretty Print
 

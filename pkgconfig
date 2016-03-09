@@ -12,11 +12,11 @@ Libs: -L${libdir} \
   -lboost_program_options \
   -lboost_date_time \
   -lmysqlcppconn \
-  -ltidy \
   -llog4cpp \
   -lnsl \
   -lcurl \
   -lcrawl \
+  -ltidy \
   -pthread
 
-Cflags: -I${includedir} 
+Cflags: -I${includedir}

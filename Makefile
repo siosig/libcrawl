@@ -6,8 +6,7 @@ INCLUDE=-I./include -I/usr/local/include -I/usr/include/tidy \
 	`pkg-config --cflags libcurl` \
   `pkg-config --cflags mysqlclient 2> /dev/null`
 
-#CXXFLAGS=-g3 -O0 -fPIC -std=c++11 $(INCLUDE)
-CXXFLAGS=-Ofast -march=native -fPIC -std=c++0x $(INCLUDE)
+CXXFLAGS=-Ofast -march=native -fPIC -std=c++11 $(INCLUDE)
 
 SRCDIR=src
 OBJDIR=obj

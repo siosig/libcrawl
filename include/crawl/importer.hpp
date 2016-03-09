@@ -3,7 +3,6 @@
 #include "crawl/executer.hpp"
 #include <string>
 #include <list>
-#include <boost/filesystem.hpp>
 
 namespace crawl {
   class Importer : public Executer {
@@ -14,7 +13,7 @@ namespace crawl {
   protected:
     uint32_t doExecute();
 
-    virtual std::vector<std::vector<std::string> > parseHtml(const boost::filesystem::path& html_file){}
+    virtual std::vector<std::vector<std::string> > parseHtml(const std::string& html_file_path){}
     virtual uint32_t importData(const std::vector<std::vector<std::string> > &rows) { return 0; }
   private:
     class ImporterPrivate;
