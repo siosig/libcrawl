@@ -13,8 +13,6 @@
 #define ERR(_STR_) (log4cpp::Category::getRoot()).error((boost::format("%s %s %s") % __FILE__ % __LINE__ % (_STR_)).str())
 
 namespace crawl {
-  xmlpp::Node* html2xml(const std::string &html_file_path, const std::string &encoding = "UTF-8");
-
   std::string get_attr_value(const xmlpp::Node *node, const std::string &path);
   std::string get_content_value(const xmlpp::Node *node, const std::string &path, uint32_t index = 0);
   std::string current_datetime_str();

@@ -7,34 +7,6 @@
 #include <libxml++/libxml++.h>
 
 namespace crawl {
-
-  xmlpp::Node* html2xml(const std::string &html_file_path, const std::string &encoding) {
-    std::string buf;
-    std::ifstream fin(html_file_path, std::ios::in);
-    std::stringstream sout;
-
-    int is_replaced = 0;
-    const static std::regex re("^<html.*$");
-    while (std::getline(fin, buf)) {
-      if (is_replaced <= 2) {
-        if (std::string::npos != buf.find("<!DOCTYPE")) {
-          is_replaced++;
-          continue;
-        }
-        if (std::string::npos != buf.find("<html")) {
-          is_replaced++;
-          buf = "<html>";
-        }
-      }
-      sout << buf << std::endl;
-    }
-    fin.close();
-
-    htmlDocPtr htmlDoc = htmlReadMemory(sout.str().c_str(), sout.str().length(), "", encoding.c_str(), HTML_PARSE_NOBLANKS | HTML_PARSE_NOERROR | HTML_PARSE_NOWARNING | HTML_PARSE_NONET | HTML_PARSE_NODEFDTD);
-    xmlpp::Document *doc = new xmlpp::Document(htmlDoc);
-    return doc->get_root_node();
-  }
-
   std::string get_attr_value(const xmlpp::Node *node, const std::string &path) {
     xmlpp::NodeSet set = node->find(path);
     if (set.size()) {
@@ -89,11 +61,12 @@ namespace crawl {
         tmp << c;
       }
     }
-    if (!tmp.str().length())
+    const std::string s = tmp.str();
+    if (!s.length())
       return 0;
-    c = tmp.str().at(tmp.str().length() - 1 );
+    c = s.at(s.length() - 1 );
     if ('0' <= c && c <= '9') {
-      return std::stoi(tmp.str().c_str());
+      return std::stoi(s.c_str());
     }
     return 0;
   }
@@ -108,11 +81,12 @@ namespace crawl {
         tmp << c;
       }
     }
-    if (!tmp.str().length())
+    const std::string s = tmp.str();
+    if (!s.length())
       return 0;
-    c = tmp.str().at(tmp.str().length() - 1 );
+    c = s.at(s.length() - 1 );
     if ('0' <= c && c <= '9') {
-      return std::stof(tmp.str().c_str());
+      return std::stof(s.c_str());
     }
     return 0;
   }

@@ -1,7 +1,5 @@
 export PKG_CONFIG_PATH := $(PKG_CONFIG_PATH):/usr/local/mysql/lib/pkgconfig
-CXX=g++
 
-#INCLUDE=-I./include -I/usr/local/include -I/usr/include/tidy \
 
 INCLUDE=-I./include -I/usr/local/include \
 	`pkg-config --cflags log4cpp ` \
@@ -11,7 +9,8 @@ INCLUDE=-I./include -I/usr/local/include \
 
 INCLUDE := $(INCLUDE)
 
-CXXFLAGS=-g3 -O0 -fPIC -std=c++11 $(INCLUDE)
+#CXXFLAGS=-g3 -O0 -fPIC -std=c++11 $(INCLUDE)
+CXXFLAGS=-Ofast -march=native -fPIC -std=c++11 $(INCLUDE)
 
 SRCDIR=src
 OBJDIR=obj
@@ -20,7 +19,7 @@ VERSION=1.0.0
 PREFIX=/usr/local
 #OBJS=$(OBJDIR)/importer.o $(OBJDIR)/tidy.o $(OBJDIR)/db.o $(OBJDIR)/updater.o $(OBJDIR)/http.o $(OBJDIR)/downloader.o $(OBJDIR)/executer.o $(OBJDIR)/downloader.o $(OBJDIR)/htmlparser.o
 
-OBJS=$(OBJDIR)/importer.o $(OBJDIR)/db.o $(OBJDIR)/updater.o $(OBJDIR)/http.o $(OBJDIR)/downloader.o $(OBJDIR)/executer.o $(OBJDIR)/downloader.o $(OBJDIR)/util.o
+OBJS=$(OBJDIR)/importer.o $(OBJDIR)/db.o $(OBJDIR)/updater.o $(OBJDIR)/http.o $(OBJDIR)/downloader.o $(OBJDIR)/executer.o $(OBJDIR)/downloader.o $(OBJDIR)/util.o $(OBJDIR)/htmlparser.o
 
 .SUFFIXES: $(SRCDIR)/.cpp $(OBJDIR)/.o
 
