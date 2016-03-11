@@ -19,6 +19,7 @@ namespace crawl {
   std::string current_date_str();
   std::string current_time_str();
   std::string to_date_string (boost::posix_time::ptime t);
+  long long cstoll(const std::string &str);
   int32_t cstoi(const std::string &str);
   float cstof(const std::string &str);
   std::string str_replace(const std::string &str, const std::string &key, const std::string &val);

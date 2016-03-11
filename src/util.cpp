@@ -8,7 +8,7 @@
 
 namespace crawl {
   std::string get_attr_value(const xmlpp::Node *node, const std::string &path) {
-    xmlpp::NodeSet set = node->find(path);
+    xmlpp::Node::const_NodeSet set = node->find(path);
     if (set.size()) {
       const xmlpp::Attribute *nodeAttr =  dynamic_cast<const xmlpp::Attribute*>(set.at(0));
       if (nodeAttr) {
@@ -19,7 +19,7 @@ namespace crawl {
   }
 
   std::string get_content_value(const xmlpp::Node *node, const std::string &path, uint32_t index) {
-    xmlpp::NodeSet set = node->find(path);
+    xmlpp::Node::const_NodeSet set = node->find(path);
     if (set.size()) {
       const xmlpp::ContentNode* nodeContent = dynamic_cast<const xmlpp::ContentNode*>(set.at(index));
       if (nodeContent) {
@@ -49,8 +49,30 @@ namespace crawl {
     return boost::posix_time::to_iso_string(t).substr(0, 8);
   }
 
+  long long cstoll(const std::string &str) {
+    long long ret = 0;
+    std::stringstream tmp;
+    char c = 0;
+    for(std::string::const_iterator it = str.begin(); it != str.end(); it++){
+      c = *it;
+      if (c== '.')
+        break;
+      if (c == '-' || (c >= '0' && c <= '9')) {
+        tmp << c;
+      }
+    }
+    const std::string s = tmp.str();
+    if (!s.length())
+      return 0;
+    c = s.at(s.length() - 1 );
+    if ('0' <= c && c <= '9') {
+      return std::stoll(s.c_str());
+    }
+    return 0;
+  }
+
   int32_t cstoi(const std::string &str) {
-    uint32_t ret = 0;
+    int32_t ret = 0;
     std::stringstream tmp;
     char c = 0;
     for(std::string::const_iterator it = str.begin(); it != str.end(); it++){

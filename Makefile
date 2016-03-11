@@ -3,7 +3,7 @@ export PKG_CONFIG_PATH := $(PKG_CONFIG_PATH):/usr/local/mysql/lib/pkgconfig
 
 INCLUDE=-I./include -I/usr/local/include \
 	`pkg-config --cflags log4cpp ` \
-  `pkg-config --cflags libxml++-2.6` \
+  `pkg-config --cflags libxml++-3.0` \
 	`pkg-config --cflags libcurl` \
   `pkg-config --cflags mysqlclient 2> /dev/null`
 

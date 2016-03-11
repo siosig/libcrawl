@@ -18,7 +18,7 @@ namespace crawl {
     ~HtmlParserPrivate() {
       xmlFreeDoc(htmlDoc);
       xmlCleanupParser();
-      xmlMemoryDump();
+      // xmlMemoryDump();
     }
 
     htmlDocPtr htmlDoc;
@@ -40,22 +40,22 @@ namespace crawl {
 
     int is_replaced = 0;
     const static std::regex re("^<html.*$");
-    while (std::getline(fin, buf)) {
-      if (is_replaced <= 2) {
-        if (std::string::npos != buf.find("<!DOCTYPE")) {
-          is_replaced++;
-          continue;
-        }
-        if (std::string::npos != buf.find("<html")) {
-          is_replaced++;
-          buf = "<html>";
-        }
+    while (std::getline(fin, buf) && is_replaced < 2) {
+      if (std::string::npos != buf.find("<!DOCTYPE")) {
+        is_replaced++;
+        continue;
+      }
+      if (std::string::npos != buf.find("<html")) {
+        is_replaced++;
+        buf = "<html>";
       }
       sout << buf << std::endl;
     }
+    sout << fin.rdbuf();
     fin.close();
+    const std::string &tmp = sout.str();
 
-    d->htmlDoc = htmlReadMemory(sout.str().c_str(), sout.str().length(), "", encoding.c_str(), HTML_PARSE_NOBLANKS | HTML_PARSE_NOERROR | HTML_PARSE_NOWARNING | HTML_PARSE_NONET | HTML_PARSE_NODEFDTD);
+    d->htmlDoc = htmlReadMemory(tmp.c_str(), tmp.length(), "", encoding.c_str(), HTML_PARSE_NOBLANKS | HTML_PARSE_NOERROR | HTML_PARSE_NOWARNING | HTML_PARSE_NONET | HTML_PARSE_NODEFDTD);
     if (!d->htmlDoc)
       return NULL;
     xmlpp::Document *doc = new xmlpp::Document(d->htmlDoc);
