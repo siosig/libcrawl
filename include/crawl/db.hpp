@@ -17,11 +17,14 @@ namespace crawl {
     void commit();
     void close();
     void setSchema(const std::string &schema);
-    uint32_t bulkInsert(const std::string &query, const std::vector<std::vector<std::string>> &rows, bool outputlog = true) const;
+    void lockTable(const std::string &table);
+    void unlockTables();
+    uint32_t bulkInsert(const std::string &query, const std::vector<std::vector<std::string>> &rows, bool outputlog = false) const;
     sql::PreparedStatement* prepare(const std::string &query, bool outputlog = false);
-    sql::ResultSet* execute(sql::PreparedStatement* stmt, std::vector<std::string> param, bool outputlog = true);
-    sql::ResultSet* execute(sql::PreparedStatement* stmt, bool outputlog = true);
-    uint32_t update(sql::PreparedStatement* stmt, std::vector<std::string> param, bool outputlog = true);
+    sql::ResultSet* execute(sql::PreparedStatement* stmt, std::vector<std::string> param, bool outputlog = false);
+    sql::ResultSet* execute(sql::PreparedStatement* stmt, bool outputlog = false);
+    uint32_t update(const std::string& query);
+    uint32_t update(sql::PreparedStatement* stmt, std::vector<std::string> param, bool outputlog = false);
   protected:
   private:
     class DBPrivate;

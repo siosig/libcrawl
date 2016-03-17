@@ -68,14 +68,17 @@ namespace crawl {
 
 
   void DB::begin() {
+    d->setupConnection();
     d->con->setAutoCommit(0);
   }
 
   void DB::commit() {
+    d->setupConnection();
     d->con->commit();
   }
 
   void DB::close() {
+    d->setupConnection();
     d->close();
   }
 
@@ -86,6 +89,16 @@ namespace crawl {
     }
   }
 
+  void DB::lockTable(const std::string &table) {
+    d->setupConnection();
+    this->update(std::string("LOCK TABLES ") + table + " WRITE");
+  }
+
+  void DB::unlockTables() {
+    d->setupConnection();
+    this->update("UNLOCK TABLES");
+  }
+
   uint32_t DB::bulkInsert(const std::string &q, const std::vector<std::vector<std::string>> &rows,bool outputlog) const {
     uint32_t ret;
     d->setupConnection();
@@ -94,8 +107,8 @@ namespace crawl {
     }
 
     std::string params = "?";
-    for (uint32_t i = 0; i < q.length(); i++) {
-      char ch = (q.c_str())[i];
+    for(std::string::const_iterator it = q.begin();  it != q.end(); it++) {
+      char ch = (*it);
       if (ch == ',') {
         params = params + ",?";
       }
@@ -179,6 +192,11 @@ namespace crawl {
       INFO((boost::format("query: %s") % d->stmt[stmt]).str());
     }
     return stmt->executeQuery();
+  }
+
+  uint32_t DB::update(const std::string& query) {
+    std::unique_ptr<sql::Statement> stmt(d->con->createStatement());
+    return stmt->executeUpdate(query);
   }
 
   uint32_t DB::update(sql::PreparedStatement* stmt, std::vector<std::string> param, bool outputlog) {

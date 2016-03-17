@@ -1,4 +1,4 @@
-export PKG_CONFIG_PATH := $(PKG_CONFIG_PATH):/usr/local/mysql/lib/pkgconfig
+export PKG_CONFIG_PATH := $(PKG_CONFIG_PATH):/usr/local/mysql/lib/pkgconfig:/usr/local/lib/pkgconfig
 
 
 INCLUDE=-I./include -I/usr/local/include \
@@ -10,7 +10,7 @@ INCLUDE=-I./include -I/usr/local/include \
 INCLUDE := $(INCLUDE)
 
 #CXXFLAGS=-g3 -O0 -fPIC -std=c++11 $(INCLUDE)
-CXXFLAGS=-Ofast -march=native -fPIC -std=c++11 $(INCLUDE)
+CXXFLAGS=$(INCLUDE) -m64 -Ofast -march=native -std=c++11 -fPIC
 
 SRCDIR=src
 OBJDIR=obj
